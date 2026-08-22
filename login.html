@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đăng nhập - Quản lý tổ dân phố</title>
+  <link rel="stylesheet" href="./css/main.css">
+  <link rel="stylesheet" href="./css/form.css">
+</head>
+<body class="auth-body">
+  <div class="auth-card">
+    <h2>ĐĂNG NHẬP HỆ THỐNG</h2>
+    <p class="auth-subtitle">Hệ thống Quản lý Tổ dân phố</p>
+
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" placeholder="admin@todanpho.vn" required>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Mật khẩu</label>
+        <input type="password" id="password" placeholder="••••••••" required>
+      </div>
+
+      <button type="submit" class="btn btn-primary" id="btnLogin">Đăng nhập</button>
+    </form>
+
+    <div class="divider"><span>HOẶC</span></div>
+
+    <button type="button" class="btn btn-google" id="btnGoogleLogin">
+      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" width="18">
+      Đăng nhập bằng tài khoản Google
+    </button>
+
+    <p id="authMessage" class="auth-message"></p>
+  </div>
+
+  <script type="module" src="./js/auth.js"></script>
+</body>
+</html>
