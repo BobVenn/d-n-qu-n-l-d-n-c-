@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quản Lý Hộ Khẩu - Tổ Dân Phố</title>
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/form.css">
+  <style>
+    .container { max-width: 1100px; margin: 20px auto; padding: 0 15px; font-family: sans-serif; }
+    .header-actions { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 10px; }
+    .search-input { padding: 8px 12px; width: 280px; border: 1px solid #ccc; border-radius: 4px; }
+    .btn { padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
+    .btn-primary { background: #007bff; color: white; }
+    .btn-danger { background: #dc3545; color: white; }
+    .btn-edit { background: #ffc107; color: #000; margin-right: 5px; }
+    table { width: 100%; border-collapse: collapse; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+    th { background: #f8f9fa; }
+    .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; }
+    .modal-content { background: white; padding: 25px; border-radius: 6px; width: 420px; }
+    .form-group { margin-bottom: 12px; }
+    .form-group label { display: block; margin-bottom: 4px; font-size: 14px; }
+    .form-group input, .form-group select { width: 100%; padding: 8px; box-sizing: border-box; }
+    .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 15px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>📋 Quản Lý Hộ Khẩu</h2>
+    
+    <div class="header-actions">
+      <input type="text" id="searchInput" class="search-input" placeholder="Tìm theo Mã HK hoặc Tên chủ hộ...">
+      <button class="btn btn-primary" id="openAddModalBtn">+ Thêm Hộ Khẩu</button>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Mã HK</th>
+          <th>Chủ Hộ</th>
+          <th>CCCD</th>
+          <th>Địa Chỉ</th>
+          <th>Số TV</th>
+          <th>Trạng Thái</th>
+          <th>Thao Tác</th>
+        </tr>
+      </thead>
+      <tbody id="hoKhauTableBody">
+        <tr><td colspan="7" style="text-align: center;">Đang tải dữ liệu...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Modal Thêm / Sửa -->
+  <div class="modal" id="hoKhauModal">
+    <div class="modal-content">
+      <h3 id="modalTitle">Thêm Hộ Khẩu Mới</h3>
+      <form id="hoKhauForm">
+        <input type="hidden" id="docId">
+        <div class="form-group">
+          <label>Mã Hộ Khẩu:</label>
+          <input type="text" id="maHoKhau" required placeholder="Ví dụ: HK001">
+        </div>
+        <div class="form-group">
+          <label>Họ Tên Chủ Hộ:</label>
+          <input type="text" id="chuHo" required>
+        </div>
+        <div class="form-group">
+          <label>CCCD Chủ Hộ:</label>
+          <input type="text" id="cccdChuHo" required>
+        </div>
+        <div class="form-group">
+          <label>Địa Chỉ:</label>
+          <input type="text" id="diaChi" required>
+        </div>
+        <div class="form-group">
+          <label>Số Thành Viên:</label>
+          <input type="number" id="soThanhVien" min="1" value="1" required>
+        </div>
+        <div class="form-group">
+          <label>Trạng Thái:</label>
+          <select id="trangThai">
+            <option value="Thường trú">Thường trú</option>
+            <option value="Tạm trú">Tạm trú</option>
+          </select>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn" id="closeModalBtn">Hủy</button>
+          <button type="submit" class="btn btn-primary">Lưu</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script type="module">
+    import { getAllHoKhau, addHoKhau, updateHoKhau, deleteHoKhau } from "../js/services/hoKhauService.js";
+
+    let listData = [];
+    const tableBody = document.getElementById("hoKhauTableBody");
+    const modal = document.getElementById("hoKhauModal");
+    const form = document.getElementById("hoKhauForm");
+    const searchInput = document.getElementById("searchInput");
+
+    async function loadData() {
+      try {
+        listData = await getAllHoKhau();
+        renderTable(listData);
+      } catch (err) {
+        tableBody.innerHTML = `<tr><td colspan="7" style="color:red; text-align:center;">Lỗi kết nối CSDL: ${err.message}</td></tr>`;
+      }
+    }
+
+    function renderTable(data) {
+      if (data.length === 0) {
+        tableBody.innerHTML = `<tr><td colspan="7" style="text-align: center;">Chưa có dữ liệu hộ khẩu.</td></tr>`;
+        return;
+      }
+      tableBody.innerHTML = data.map(item => `
+        <tr>
+          <td><strong>${item.maHoKhau || ""}</strong></td>
+          <td>${item.chuHo || ""}</td>
+          <td>${item.cccdChuHo || ""}</td>
+          <td>${item.diaChi || ""}</td>
+          <td>${item.soThanhVien || 1}</td>
+          <td><span>${item.trangThai || "Thường trú"}</span></td>
+          <td>
+            <button class="btn btn-edit" data-id="${item.id}">Sửa</button>
+            <button class="btn btn-danger" data-del="${item.id}">Xóa</button>
+          </td>
+        </tr>
+      `).join("");
+    }
+
+    // Mở modal thêm
+    document.getElementById("openAddModalBtn").onclick = () => {
+      form.reset();
+      document.getElementById("docId").value = "";
+      document.getElementById("modalTitle").innerText = "Thêm Hộ Khẩu Mới";
+      modal.style.display = "flex";
+    };
+
+    // Đóng modal
+    document.getElementById("closeModalBtn").onclick = () => modal.style.display = "none";
+
+    // Submit form (Thêm hoặc Sửa)
+    form.onsubmit = async (e) => {
+      e.preventDefault();
+      const docId = document.getElementById("docId").value;
+      const data = {
+        maHoKhau: document.getElementById("maHoKhau").value.trim(),
+        chuHo: document.getElementById("chuHo").value.trim(),
+        cccdChuHo: document.getElementById("cccdChuHo").value.trim(),
+        diaChi: document.getElementById("diaChi").value.trim(),
+        soThanhVien: Number(document.getElementById("soThanhVien").value),
+        trangThai: document.getElementById("trangThai").value
+      };
+
+      if (docId) {
+        await updateHoKhau(docId, data);
+      } else {
+        await addHoKhau(data);
+      }
+      modal.style.display = "none";
+      loadData();
+    };
+
+    // Xử lý nút Sửa / Xóa trong bảng
+    tableBody.onclick = async (e) => {
+      const editId = e.target.getAttribute("data-id");
+      const delId = e.target.getAttribute("data-del");
+
+      if (editId) {
+        const item = listData.find(d => d.id === editId);
+        if (!item) return;
+        document.getElementById("docId").value = item.id;
+        document.getElementById("maHoKhau").value = item.maHoKhau;
+        document.getElementById("chuHo").value = item.chuHo;
+        document.getElementById("cccdChuHo").value = item.cccdChuHo;
+        document.getElementById("diaChi").value = item.diaChi;
+        document.getElementById("soThanhVien").value = item.soThanhVien;
+        document.getElementById("trangThai").value = item.trangThai;
+        document.getElementById("modalTitle").innerText = "Chỉnh Sửa Hộ Khẩu";
+        modal.style.display = "flex";
+      }
+
+      if (delId && confirm("Bạn có chắc chắn muốn xóa hộ khẩu này?")) {
+        await deleteHoKhau(delId);
+        loadData();
+      }
+    };
+
+    // Tìm kiếm
+    searchInput.oninput = () => {
+      const kw = searchInput.value.toLowerCase();
+      const filtered = listData.filter(d => 
+        (d.maHoKhau && d.maHoKhau.toLowerCase().includes(kw)) ||
+        (d.chuHo && d.chuHo.toLowerCase().includes(kw))
+      );
+      renderTable(filtered);
+    };
+
+    loadData();
+  </script>
+</body>
+</html>
