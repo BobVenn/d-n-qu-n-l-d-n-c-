@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Nhân Khẩu - Tổ Dân Phố</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome 6 Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
+    <style>
+        body {
+            background-color: #f8fafc;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        .wrapper {
+            display: flex;
+            width: 100%;
+            min-height: 100vh;
+        }
+
+        /* SIDEBAR TỐI ƯU */
+        #sidebar {
+            min-width: 250px;
+            max-width: 250px;
+            background-color: #1e293b;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+        }
+
+        #sidebar .sidebar-header {
+            padding: 24px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #38bdf8;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        #sidebar ul.components {
+            padding: 15px 0;
+            list-style: none;
+            margin: 0;
+        }
+
+        #sidebar ul li a {
+            padding: 12px 24px;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #94a3b8;
+            text-decoration: none;
+            transition: all 0.2s ease-in-out;
+            border-left: 4px solid transparent;
+        }
+
+        #sidebar ul li a i {
+            width: 20px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        #sidebar ul li a:hover {
+            color: #f8fafc;
+            background-color: rgba(255, 255, 255, 0.06);
+        }
+
+        #sidebar ul li.active > a {
+            color: #38bdf8;
+            background-color: #0f172a;
+            border-left-color: #38bdf8;
+            font-weight: 600;
+        }
+
+        .sidebar-footer {
+            padding: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .btn-logout-sidebar {
+            width: 100%;
+            background-color: #ef4444;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-decoration: none;
+            transition: background-color 0.2s ease;
+        }
+
+        .btn-logout-sidebar:hover {
+            background-color: #dc2626;
+            color: white;
+        }
+
+        /* NỘI DUNG VỚI HIỆU ỨNG TẢI TRANG MƯỢT */
+        #content {
+            flex-grow: 1;
+            padding: 25px 35px;
+            animation: fadeIn 0.25s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .top-user-bar {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .user-badge {
+            background-color: #e2e8f0;
+            color: #475569;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .card-custom {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+            border: 1px solid #e2e8f0;
+            padding: 24px;
+        }
+
+        .btn-primary-custom {
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            font-weight: 600;
+            border-radius: 8px;
+            padding: 8px 18px;
+            transition: background-color 0.2s ease;
+        }
+
+        .btn-primary-custom:hover {
+            background-color: #1d4ed8;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="wrapper">
+        <!-- SIDEBAR ĐỒNG BỘ ICON MỚI -->
+        <nav id="sidebar">
+            <div>
+                <div class="sidebar-header">
+                    <i class="fa-solid fa-city"></i>
+                    <span>Tổ Dân Phố</span>
+                </div>
+
+                <ul class="list-unstyled components">
+                    <li>
+                        <a href="../index.html"><i class="fa-solid fa-chart-line"></i> Tổng quan</a>
+                    </li>
+                    <li>
+                        <a href="ho-khau.html"><i class="fa-solid fa-address-book"></i> Quản lý Hộ khẩu</a>
+                    </li>
+                    <li class="active">
+                        <a href="nhan-khau.html"><i class="fa-solid fa-users"></i> Quản lý Nhân khẩu</a>
+                    </li>
+                    <li>
+                        <a href="thu-phi.html"><i class="fa-solid fa-receipt"></i> Quản lý Thu - Chi</a>
+                    </li>
+                    <li>
+                        <a href="phan-anh.html"><i class="fa-solid fa-comment-dots"></i> Phản ánh cư dân</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="sidebar-footer">
+                <a href="../login.html" class="btn-logout-sidebar">
+                    <i class="fa-solid fa-right-from-bracket"></i> Đăng xuất
+                </a>
+            </div>
+        </nav>
+
+        <!-- NỘI DUNG CHÍNH -->
+        <div id="content">
+            <div class="top-user-bar">
+                <span class="text-secondary">Xin chào, <strong class="text-dark">hoang'g khánh'h</strong></span>
+                <span class="user-badge">Cư dân</span>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 class="fw-bold text-dark mb-0">Quản Lý Nhân Khẩu</h3>
+                <button class="btn btn-primary-custom" data-bs-toggle="modal" data-bs-target="#modalNhanKhau" onclick="resetForm()">
+                    <i class="fa-solid fa-user-plus me-1"></i> Thêm Nhân Khẩu Mới
+                </button>
+            </div>
+
+            <div class="card card-custom">
+                <div class="row g-3 mb-4">
+                    <div class="col-md-4">
+                        <label class="form-label fw-semibold text-muted mb-1">Tìm kiếm thông tin</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0"><i class="fa-solid fa-magnifying-glass text-muted"></i></span>
+                            <input type="text" id="searchInput" class="form-control border-start-0" placeholder="Nhập Tên, CCCD...">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-semibold text-muted mb-1">Lọc theo Hộ khẩu</label>
+                        <select id="hoKhauFilter" class="form-select">
+                            <option value="">-- Tất cả Hộ khẩu --</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-semibold text-muted mb-1">Giới tính</label>
+                        <select id="genderFilter" class="form-select">
+                            <option value="">-- Tất cả giới tính --</option>
+                            <option value="Nam">Nam</option>
+                            <option value="Nữ">Nữ</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button class="btn btn-outline-secondary w-100" id="btnResetFilter">
+                            <i class="fa-solid fa-rotate-left me-1"></i> Xóa lọc
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table align-middle text-center table-hover">
+                        <thead class="table-light">
+                            <tr class="border-bottom">
+                                <th>Mã Hộ Khẩu</th>
+                                <th>Họ Tên</th>
+                                <th>CCCD</th>
+                                <th>Ngày Sinh</th>
+                                <th>Giới Tính</th>
+                                <th>Quan Hệ Với Chủ Hộ</th>
+                                <th>Hành Động</th>
+                            </tr>
+                        </thead>
+                        <tbody id="nhanKhauTableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL THÊM / SỬA -->
+    <div class="modal fade" id="modalNhanKhau" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title fw-bold" id="modalTitle">Thêm Nhân Khẩu Mới</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="formNhanKhau">
+                        <input type="hidden" id="docId">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Mã Hộ Khẩu (*)</label>
+                                <input type="text" class="form-control" id="maHoKhau" placeholder="Ví dụ: HK001" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Họ Tên (*)</label>
+                                <input type="text" class="form-control" id="hoTen" placeholder="Ví dụ: Nguyễn Văn B" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Số CCCD (*)</label>
+                                <input type="text" class="form-control" id="cccd" placeholder="031..." required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Ngày Sinh (*)</label>
+                                <input type="date" class="form-control" id="ngaySinh" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Giới Tính (*)</label>
+                                <select class="form-select" id="gioiTinh" required>
+                                    <option value="Nam">Nam</option>
+                                    <option value="Nữ">Nữ</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Quan Hệ Với Chủ Hộ (*)</label>
+                                <input type="text" class="form-control" id="quanHeVoiChuHo" placeholder="Chủ hộ, Vợ, Con trai..." required>
+                            </div>
+                        </div>
+                        <div class="text-end mt-4 pt-3 border-top">
+                            <button type="button" class="btn btn-light me-2 px-4" data-bs-dismiss="modal">Hủy</button>
+                            <button type="submit" class="btn btn-primary-custom px-4">Lưu Nhân Khẩu</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="../js/services/nhanKhauService.js"></script>
+</body>
+</html>

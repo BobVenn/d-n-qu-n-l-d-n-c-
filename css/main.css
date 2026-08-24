@@ -1,0 +1,30 @@
+body {
+    background: url('https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Dong_Son_drum_pattern.svg/1200px-Dong_Son_drum_pattern.svg.png') center center repeat;
+    background-size: 800px;
+    background-color: #f2efe9;
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+}
+
+.main-container {
+    max-width: 1100px;
+    margin: 40px auto;
+}
+
+.card-custom {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    border: none;
+    padding: 25px;
+}
+
+.btn-success-custom {
+    background-color: #00c853;
+    border: none;
+    font-weight: bold;
+}
+
+.btn-success-custom:hover {
+    background-color: #00a843;
+}
