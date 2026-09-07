@@ -1,0 +1,14 @@
+{
+  "name": "quan-ly-phan-anh-to-dan-pho",
+  "version": "1.0.0",
+  "description": "Hệ thống phản ánh và phản hồi ý kiến hộ dân",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "nodemailer": "^6.9.13",
+    "sqlite3": "^5.1.7"
+  }
+}
