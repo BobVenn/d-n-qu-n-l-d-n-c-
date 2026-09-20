@@ -1,206 +1,472 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Quản Lý Hộ Khẩu - Tổ Dân Phố</title>
-  <link rel="stylesheet" href="../css/main.css">
-  <link rel="stylesheet" href="../css/form.css">
-  <style>
-    .container { max-width: 1100px; margin: 20px auto; padding: 0 15px; font-family: sans-serif; }
-    .header-actions { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 10px; }
-    .search-input { padding: 8px 12px; width: 280px; border: 1px solid #ccc; border-radius: 4px; }
-    .btn { padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
-    .btn-primary { background: #007bff; color: white; }
-    .btn-danger { background: #dc3545; color: white; }
-    .btn-edit { background: #ffc107; color: #000; margin-right: 5px; }
-    table { width: 100%; border-collapse: collapse; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-    th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
-    th { background: #f8f9fa; }
-    .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; }
-    .modal-content { background: white; padding: 25px; border-radius: 6px; width: 420px; }
-    .form-group { margin-bottom: 12px; }
-    .form-group label { display: block; margin-bottom: 4px; font-size: 14px; }
-    .form-group input, .form-group select { width: 100%; padding: 8px; box-sizing: border-box; }
-    .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 15px; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Hộ Khẩu - Tổ Dân Phố</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome 6 Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
+    <style>
+        body {
+            background-color: #f8fafc;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        .wrapper {
+            display: flex;
+            width: 100%;
+            min-height: 100vh;
+        }
+
+        /* SIDEBAR CHUẨN ĐỒNG BỘ */
+        #sidebar {
+            min-width: 250px;
+            max-width: 250px;
+            background-color: #1e293b;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+        }
+
+        #sidebar .sidebar-header {
+            padding: 24px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #38bdf8;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        #sidebar ul.components {
+            padding: 15px 0;
+            list-style: none;
+            margin: 0;
+        }
+
+        #sidebar ul li a {
+            padding: 12px 24px;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #94a3b8;
+            text-decoration: none;
+            transition: all 0.2s ease-in-out;
+            border-left: 4px solid transparent;
+        }
+
+        #sidebar ul li a i {
+            width: 20px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        #sidebar ul li a:hover {
+            color: #f8fafc;
+            background-color: rgba(255, 255, 255, 0.06);
+        }
+
+        #sidebar ul li.active > a {
+            color: #38bdf8;
+            background-color: #0f172a;
+            border-left-color: #38bdf8;
+            font-weight: 600;
+        }
+
+        .sidebar-footer {
+            padding: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .btn-logout-sidebar {
+            width: 100%;
+            background-color: #ef4444;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-decoration: none;
+            transition: background-color 0.2s ease;
+        }
+
+        .btn-logout-sidebar:hover {
+            background-color: #dc2626;
+            color: white;
+        }
+
+        /* NỘI DUNG CHÍNH */
+        #content {
+            flex-grow: 1;
+            padding: 25px 35px;
+            animation: fadeIn 0.25s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .top-user-bar {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .user-badge {
+            background-color: #e2e8f0;
+            color: #475569;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .card-custom {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+            border: 1px solid #e2e8f0;
+            padding: 24px;
+        }
+
+        .btn-primary-custom {
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            font-weight: 600;
+            border-radius: 8px;
+            padding: 8px 18px;
+            transition: background-color 0.2s ease;
+        }
+
+        .btn-primary-custom:hover {
+            background-color: #1d4ed8;
+            color: white;
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <h2>📋 Quản Lý Hộ Khẩu</h2>
+
+    <div class="wrapper">
+        <!-- SIDEBAR -->
+        <nav id="sidebar">
+            <div>
+                <div class="sidebar-header">
+                    <i class="fa-solid fa-city"></i>
+                    <span>Tổ Dân Phố</span>
+                </div>
+
+                <ul class="list-unstyled components">
+                    <!-- Mục Tổng quan: Cả Admin và Cư dân đều thấy -->
+                    <li>
+                        <a href="../index.html"><i class="fa-solid fa-chart-line"></i> Tổng quan</a>
+                    </li>
+                    <!-- Mục dành riêng cho Admin/Cán bộ -->
+                    <li class="active admin-only">
+                        <a href="ho-khau.html"><i class="fa-solid fa-address-book"></i> Quản lý Hộ khẩu</a>
+                    </li>
+                    <li class="admin-only">
+                        <a href="nhan-khau.html"><i class="fa-solid fa-users"></i> Quản lý Nhân khẩu</a>
+                    </li>
+                    <li class="admin-only">
+                        <a href="thu-phi.html"><i class="fa-solid fa-receipt"></i> Quản lý Thu - Chi</a>
+                    </li>
+                    <!-- Mục Cư dân và Admin đều thấy -->
+                    <li>
+                        <a href="phan-anh.html"><i class="fa-solid fa-comment-dots"></i> Phản ánh cư dân</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="sidebar-footer">
+                <button id="btnLogout" class="btn-logout-sidebar">
+                    <i class="fa-solid fa-right-from-bracket"></i> Đăng xuất
+                </button>
+            </div>
+        </nav>
+
+        <!-- NỘI DUNG CHÍNH -->
+        <div id="content">
+            <!-- Header User Info -->
+            <div class="top-user-bar">
+                <span class="text-secondary">Xin chào, <strong id="userDisplayName" class="text-dark">Đang tải...</strong></span>
+                <span id="userRoleBadge" class="user-badge">Cư dân</span>
+            </div>
+
+            <!-- Title & Top Button -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 class="fw-bold text-dark mb-0">Quản Lý Hộ Khẩu</h3>
+                <button class="btn btn-primary-custom admin-only" id="openAddModalBtn">
+                    <i class="fa-solid fa-house-chimney-medical me-1"></i> Thêm Hộ Khẩu Mới
+                </button>
+            </div>
+
+            <!-- Filter & Table Card -->
+            <div class="card card-custom">
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold text-muted mb-1">Tìm kiếm thông tin</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0"><i class="fa-solid fa-magnifying-glass text-muted"></i></span>
+                            <input type="text" id="searchInput" class="form-control border-start-0" placeholder="Nhập Mã HK, Tên Chủ Hộ, CCCD...">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-semibold text-muted mb-1">Trạng thái cư trú</label>
+                        <select id="statusFilter" class="form-select">
+                            <option value="">-- Tất cả trạng thái --</option>
+                            <option value="Thường trú">Thường trú</option>
+                            <option value="Tạm trú">Tạm trú</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button class="btn btn-outline-secondary w-100" id="btnResetFilter">
+                            <i class="fa-solid fa-rotate-left me-1"></i> Xóa lọc
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table align-middle text-center table-hover">
+                        <thead class="table-light">
+                            <tr class="border-bottom">
+                                <th>Mã HK</th>
+                                <th>Chủ Hộ</th>
+                                <th>CCCD Chủ Hộ</th>
+                                <th>Địa Chỉ</th>
+                                <th>Số TV</th>
+                                <th>Trạng Thái</th>
+                                <th class="admin-only">Thao Tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="hoKhauTableBody">
+                            <tr>
+                                <td colspan="7" class="py-4 text-muted"><i class="fa-solid fa-spinner fa-spin me-2"></i>Đang tải dữ liệu hộ khẩu...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL THÊM / SỬA HỘ KHẨU -->
+    <div class="modal fade" id="hoKhauModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title fw-bold" id="modalTitle">Thêm Hộ Khẩu Mới</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="hoKhauForm">
+                        <input type="hidden" id="docId">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Mã Hộ Khẩu (*)</label>
+                                <input type="text" class="form-control" id="maHoKhau" placeholder="Ví dụ: HK001" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Chủ Hộ (*)</label>
+                                <input type="text" class="form-control" id="chuHo" placeholder="Ví dụ: Nguyễn Văn A" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">CCCD Chủ Hộ (*)</label>
+                                <input type="text" class="form-control" id="cccdChuHo" placeholder="031..." required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Số Thành Viên (*)</label>
+                                <input type="number" class="form-control" id="soThanhVien" min="1" value="1" required>
+                            </div>
+                            <div class="col-md-8">
+                                <label class="form-label fw-semibold">Địa Chỉ (*)</label>
+                                <input type="text" class="form-control" id="diaChi" placeholder="Số nhà, Tên đường, Tổ dân phố..." required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">Trạng Thái (*)</label>
+                                <select class="form-select" id="trangThai">
+                                    <option value="Thường trú">Thường trú</option>
+                                    <option value="Tạm trú">Tạm trú</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="text-end mt-4 pt-3 border-top">
+                            <button type="button" class="btn btn-light me-2 px-4" data-bs-dismiss="modal">Hủy</button>
+                            <button type="submit" class="btn btn-primary-custom px-4">Lưu Hộ Khẩu</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
-    <div class="header-actions">
-      <input type="text" id="searchInput" class="search-input" placeholder="Tìm theo Mã HK hoặc Tên chủ hộ...">
-      <button class="btn btn-primary" id="openAddModalBtn">+ Thêm Hộ Khẩu</button>
-    </div>
+    <!-- Script Bảo vệ Auth & Phân quyền -->
+    <script type="module" src="../js/check-auth.js"></script>
 
-    <table>
-      <thead>
-        <tr>
-          <th>Mã HK</th>
-          <th>Chủ Hộ</th>
-          <th>CCCD</th>
-          <th>Địa Chỉ</th>
-          <th>Số TV</th>
-          <th>Trạng Thái</th>
-          <th>Thao Tác</th>
-        </tr>
-      </thead>
-      <tbody id="hoKhauTableBody">
-        <tr><td colspan="7" style="text-align: center;">Đang tải dữ liệu...</td></tr>
-      </tbody>
-    </table>
-  </div>
+    <!-- Script Xử lý Logic Hộ Khẩu -->
+    <script type="module">
+        import { getAllHoKhau, addHoKhau, updateHoKhau, deleteHoKhau } from "../js/services/hoKhauService.js";
 
-  <!-- Modal Thêm / Sửa -->
-  <div class="modal" id="hoKhauModal">
-    <div class="modal-content">
-      <h3 id="modalTitle">Thêm Hộ Khẩu Mới</h3>
-      <form id="hoKhauForm">
-        <input type="hidden" id="docId">
-        <div class="form-group">
-          <label>Mã Hộ Khẩu:</label>
-          <input type="text" id="maHoKhau" required placeholder="Ví dụ: HK001">
-        </div>
-        <div class="form-group">
-          <label>Họ Tên Chủ Hộ:</label>
-          <input type="text" id="chuHo" required>
-        </div>
-        <div class="form-group">
-          <label>CCCD Chủ Hộ:</label>
-          <input type="text" id="cccdChuHo" required>
-        </div>
-        <div class="form-group">
-          <label>Địa Chỉ:</label>
-          <input type="text" id="diaChi" required>
-        </div>
-        <div class="form-group">
-          <label>Số Thành Viên:</label>
-          <input type="number" id="soThanhVien" min="1" value="1" required>
-        </div>
-        <div class="form-group">
-          <label>Trạng Thái:</label>
-          <select id="trangThai">
-            <option value="Thường trú">Thường trú</option>
-            <option value="Tạm trú">Tạm trú</option>
-          </select>
-        </div>
-        <div class="modal-actions">
-          <button type="button" class="btn" id="closeModalBtn">Hủy</button>
-          <button type="submit" class="btn btn-primary">Lưu</button>
-        </div>
-      </form>
-    </div>
-  </div>
+        let listData = [];
+        const tableBody = document.getElementById("hoKhauTableBody");
+        const modalEl = document.getElementById("hoKhauModal");
+        const modal = new bootstrap.Modal(modalEl);
+        const form = document.getElementById("hoKhauForm");
+        const searchInput = document.getElementById("searchInput");
+        const statusFilter = document.getElementById("statusFilter");
 
-  <script type="module">
-    import { getAllHoKhau, addHoKhau, updateHoKhau, deleteHoKhau } from "../js/services/hoKhauService.js";
+        // 1. Load dữ liệu từ Firestore
+        async function loadData() {
+            try {
+                listData = await getAllHoKhau();
+                filterAndRender();
+            } catch (err) {
+                console.error("Lỗi:", err);
+                tableBody.innerHTML = `<tr><td colspan="7" class="text-center text-danger py-4">Lỗi kết nối CSDL: ${err.message}</td></tr>`;
+            }
+        }
 
-    let listData = [];
-    const tableBody = document.getElementById("hoKhauTableBody");
-    const modal = document.getElementById("hoKhauModal");
-    const form = document.getElementById("hoKhauForm");
-    const searchInput = document.getElementById("searchInput");
+        // 2. Render dữ liệu ra Table
+        function renderTable(data) {
+            if (data.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-muted">Chưa có dữ liệu hộ khẩu.</td></tr>`;
+                return;
+            }
+            tableBody.innerHTML = data.map(item => `
+                <tr>
+                    <td><span class="badge bg-primary-subtle text-primary fw-bold">${item.maHoKhau || ""}</span></td>
+                    <td class="fw-semibold text-dark">${item.chuHo || ""}</td>
+                    <td>${item.cccdChuHo || ""}</td>
+                    <td class="text-start">${item.diaChi || ""}</td>
+                    <td><span class="badge bg-secondary-subtle text-secondary">${item.soThanhVien || 1} người</span></td>
+                    <td>
+                        <span class="badge ${item.trangThai === 'Tạm trú' ? 'bg-warning-subtle text-warning-emphasis' : 'bg-success-subtle text-success-emphasis'}">
+                            ${item.trangThai || "Thường trú"}
+                        </span>
+                    </td>
+                    <td class="admin-only">
+                        <button class="btn btn-sm btn-outline-warning me-1 btn-edit" data-id="${item.id}" title="Sửa">
+                            <i class="fa-solid fa-pen"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger btn-delete" data-del="${item.id}" title="Xóa">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join("");
+        }
 
-    async function loadData() {
-      try {
-        listData = await getAllHoKhau();
-        renderTable(listData);
-      } catch (err) {
-        tableBody.innerHTML = `<tr><td colspan="7" style="color:red; text-align:center;">Lỗi kết nối CSDL: ${err.message}</td></tr>`;
-      }
-    }
+        // 3. Lọc và Tìm kiếm
+        function filterAndRender() {
+            const kw = searchInput.value.toLowerCase().trim();
+            const status = statusFilter.value;
 
-    function renderTable(data) {
-      if (data.length === 0) {
-        tableBody.innerHTML = `<tr><td colspan="7" style="text-align: center;">Chưa có dữ liệu hộ khẩu.</td></tr>`;
-        return;
-      }
-      tableBody.innerHTML = data.map(item => `
-        <tr>
-          <td><strong>${item.maHoKhau || ""}</strong></td>
-          <td>${item.chuHo || ""}</td>
-          <td>${item.cccdChuHo || ""}</td>
-          <td>${item.diaChi || ""}</td>
-          <td>${item.soThanhVien || 1}</td>
-          <td><span>${item.trangThai || "Thường trú"}</span></td>
-          <td>
-            <button class="btn btn-edit" data-id="${item.id}">Sửa</button>
-            <button class="btn btn-danger" data-del="${item.id}">Xóa</button>
-          </td>
-        </tr>
-      `).join("");
-    }
+            const filtered = listData.filter(d => {
+                const matchKw = (d.maHoKhau && d.maHoKhau.toLowerCase().includes(kw)) ||
+                                (d.chuHo && d.chuHo.toLowerCase().includes(kw)) ||
+                                (d.cccdChuHo && d.cccdChuHo.toLowerCase().includes(kw));
+                const matchStatus = !status || d.trangThai === status;
+                return matchKw && matchStatus;
+            });
 
-    // Mở modal thêm
-    document.getElementById("openAddModalBtn").onclick = () => {
-      form.reset();
-      document.getElementById("docId").value = "";
-      document.getElementById("modalTitle").innerText = "Thêm Hộ Khẩu Mới";
-      modal.style.display = "flex";
-    };
+            renderTable(filtered);
+        }
 
-    // Đóng modal
-    document.getElementById("closeModalBtn").onclick = () => modal.style.display = "none";
+        // Event tìm kiếm & lọc
+        searchInput.oninput = filterAndRender;
+        statusFilter.onchange = filterAndRender;
+        document.getElementById("btnResetFilter").onclick = () => {
+            searchInput.value = "";
+            statusFilter.value = "";
+            renderTable(listData);
+        };
 
-    // Submit form (Thêm hoặc Sửa)
-    form.onsubmit = async (e) => {
-      e.preventDefault();
-      const docId = document.getElementById("docId").value;
-      const data = {
-        maHoKhau: document.getElementById("maHoKhau").value.trim(),
-        chuHo: document.getElementById("chuHo").value.trim(),
-        cccdChuHo: document.getElementById("cccdChuHo").value.trim(),
-        diaChi: document.getElementById("diaChi").value.trim(),
-        soThanhVien: Number(document.getElementById("soThanhVien").value),
-        trangThai: document.getElementById("trangThai").value
-      };
+        // 4. Mở modal thêm
+        document.getElementById("openAddModalBtn").onclick = () => {
+            form.reset();
+            document.getElementById("docId").value = "";
+            document.getElementById("modalTitle").innerText = "Thêm Hộ Khẩu Mới";
+            modal.show();
+        };
 
-      if (docId) {
-        await updateHoKhau(docId, data);
-      } else {
-        await addHoKhau(data);
-      }
-      modal.style.display = "none";
-      loadData();
-    };
+        // 5. Submit Form
+        form.onsubmit = async (e) => {
+            e.preventDefault();
+            const docId = document.getElementById("docId").value;
+            const data = {
+                maHoKhau: document.getElementById("maHoKhau").value.trim(),
+                chuHo: document.getElementById("chuHo").value.trim(),
+                cccdChuHo: document.getElementById("cccdChuHo").value.trim(),
+                diaChi: document.getElementById("diaChi").value.trim(),
+                soThanhVien: Number(document.getElementById("soThanhVien").value),
+                trangThai: document.getElementById("trangThai").value
+            };
 
-    // Xử lý nút Sửa / Xóa trong bảng
-    tableBody.onclick = async (e) => {
-      const editId = e.target.getAttribute("data-id");
-      const delId = e.target.getAttribute("data-del");
+            try {
+                if (docId) {
+                    await updateHoKhau(docId, data);
+                } else {
+                    await addHoKhau(data);
+                }
+                modal.hide();
+                loadData();
+            } catch (err) {
+                alert("Lỗi khi lưu dữ liệu: " + err.message);
+            }
+        };
 
-      if (editId) {
-        const item = listData.find(d => d.id === editId);
-        if (!item) return;
-        document.getElementById("docId").value = item.id;
-        document.getElementById("maHoKhau").value = item.maHoKhau;
-        document.getElementById("chuHo").value = item.chuHo;
-        document.getElementById("cccdChuHo").value = item.cccdChuHo;
-        document.getElementById("diaChi").value = item.diaChi;
-        document.getElementById("soThanhVien").value = item.soThanhVien;
-        document.getElementById("trangThai").value = item.trangThai;
-        document.getElementById("modalTitle").innerText = "Chỉnh Sửa Hộ Khẩu";
-        modal.style.display = "flex";
-      }
+        // 6. Xử lý Nút Sửa / Xóa
+        tableBody.onclick = async (e) => {
+            const btnEdit = e.target.closest('.btn-edit');
+            const btnDelete = e.target.closest('.btn-delete');
 
-      if (delId && confirm("Bạn có chắc chắn muốn xóa hộ khẩu này?")) {
-        await deleteHoKhau(delId);
+            if (btnEdit) {
+                const editId = btnEdit.getAttribute("data-id");
+                const item = listData.find(d => d.id === editId);
+                if (!item) return;
+
+                document.getElementById("docId").value = item.id;
+                document.getElementById("maHoKhau").value = item.maHoKhau || "";
+                document.getElementById("chuHo").value = item.chuHo || "";
+                document.getElementById("cccdChuHo").value = item.cccdChuHo || "";
+                document.getElementById("diaChi").value = item.diaChi || "";
+                document.getElementById("soThanhVien").value = item.soThanhVien || 1;
+                document.getElementById("trangThai").value = item.trangThai || "Thường trú";
+
+                document.getElementById("modalTitle").innerText = "Chỉnh Sửa Thông Tin Hộ Khẩu";
+                modal.show();
+            }
+
+            if (btnDelete) {
+                const delId = btnDelete.getAttribute("data-del");
+                if (confirm("Bạn có chắc chắn muốn xóa hộ khẩu này khỏi hệ thống?")) {
+                    await deleteHoKhau(delId);
+                    loadData();
+                }
+            }
+        };
+
+        // Tải dữ liệu ban đầu
         loadData();
-      }
-    };
-
-    // Tìm kiếm
-    searchInput.oninput = () => {
-      const kw = searchInput.value.toLowerCase();
-      const filtered = listData.filter(d => 
-        (d.maHoKhau && d.maHoKhau.toLowerCase().includes(kw)) ||
-        (d.chuHo && d.chuHo.toLowerCase().includes(kw))
-      );
-      renderTable(filtered);
-    };
-
-    loadData();
-  </script>
+    </script>
 </body>
 </html>

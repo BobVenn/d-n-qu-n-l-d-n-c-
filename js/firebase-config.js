@@ -1,22 +1,23 @@
 // Import Firebase SDK (Modular ESM qua CDN)
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getAuth, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-// Thông tin cấu hình từ Project Settings trên Firebase Console của bạn
+// Cấu hình Firebase project của bạn
 const firebaseConfig = {
-  apiKey: "AIzaSyDPsDoUeMsm5Es3vMWAxw7PLQ4yrfkJ8pQ",
-  authDomain: "quan-ly-to-dan.firebaseapp.com",
-  projectId: "quan-ly-to-dan",
-  storageBucket: "quan-ly-to-dan.firebasestorage.app",
-  messagingSenderId: "396470269098",
-  appId: "1:396470269098:web:b70dbe8a9337157bc3ccd3",
-  measurementId: "G-RYHRJDES7C"
+  apiKey: "AIzaSyC4iyGuVM18VfjC51hmyc_Ravyqf3W0H6I",
+  authDomain: "quanlytodanpho.firebaseapp.com",
+  projectId: "quanlytodanpho",
+  storageBucket: "quanlytodanpho.firebasestorage.app",
+  messagingSenderId: "927286882414",
+  appId: "1:927286882414:web:8a8f57587e10e3a7da767f",
+  measurementId: "G-ZEBMDJQ8Y8"
 };
 
 // Khởi tạo Firebase App
 const app = initializeApp(firebaseConfig);
 
-// Khởi tạo và export các service dùng chung cho toàn bộ web
+// Khởi tạo và export các service dùng chung
 export const auth = getAuth(app);
 export const db = getFirestore(app);
+export const googleProvider = new GoogleAuthProvider();
