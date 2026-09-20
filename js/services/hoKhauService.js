@@ -1,41 +1,80 @@
+// js/services/hoKhauService.js
 import { db } from "../firebase-config.js";
 import { 
   collection, 
   getDocs, 
   addDoc, 
+  doc, 
   updateDoc, 
   deleteDoc, 
-  doc, 
-  query, 
-  orderBy,
   serverTimestamp 
-} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-const hoKhauRef = collection(db, "hoKhau");
+// Tham chiếu đến collection 'households' trong Firestore
+const hoKhauRef = collection(db, "households");
 
-// 1. Lấy danh sách hộ khẩu
-export async function getAllHoKhau() {
-  const q = query(hoKhauRef, orderBy("maHoKhau", "asc"));
-  const snapshot = await getDocs(q);
-  return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-}
+/**
+ * 1. Lấy toàn bộ danh sách Hộ khẩu
+ */
+export const getAllHoKhau = async () => {
+  try {
+    const snapshot = await getDocs(hoKhauRef);
+    const list = [];
+    snapshot.forEach((docSnap) => {
+      list.push({
+        id: docSnap.id,
+        ...docSnap.data()
+      });
+    });
+    return list;
+  } catch (error) {
+    console.error("Lỗi lấy danh sách hộ khẩu:", error);
+    throw error;
+  }
+};
 
-// 2. Thêm hộ khẩu mới
-export async function addHoKhau(data) {
-  return await addDoc(hoKhauRef, {
-    ...data,
-    createdAt: serverTimestamp()
-  });
-}
+/**
+ * 2. Thêm Hộ khẩu mới
+ */
+export const addHoKhau = async (data) => {
+  try {
+    const docRef = await addDoc(hoKhauRef, {
+      ...data,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp()
+    });
+    return docRef.id;
+  } catch (error) {
+    console.error("Lỗi thêm hộ khẩu:", error);
+    throw error;
+  }
+};
 
-// 3. Cập nhật hộ khẩu
-export async function updateHoKhau(id, data) {
-  const docRef = doc(db, "hoKhau", id);
-  return await updateDoc(docRef, data);
-}
+/**
+ * 3. Cập nhật Hộ khẩu theo ID
+ */
+export const updateHoKhau = async (id, data) => {
+  try {
+    const docToUpdate = doc(db, "households", id);
+    await updateDoc(docToUpdate, {
+      ...data,
+      updatedAt: serverTimestamp()
+    });
+  } catch (error) {
+    console.error("Lỗi cập nhật hộ khẩu:", error);
+    throw error;
+  }
+};
 
-// 4. Xóa hộ khẩu
-export async function deleteHoKhau(id) {
-  const docRef = doc(db, "hoKhau", id);
-  return await deleteDoc(docRef);
-}
+/**
+ * 4. Xóa Hộ khẩu theo ID
+ */
+export const deleteHoKhau = async (id) => {
+  try {
+    const docToDelete = doc(db, "households", id);
+    await deleteDoc(docToDelete);
+  } catch (error) {
+    console.error("Lỗi xóa hộ khẩu:", error);
+    throw error;
+  }
+};

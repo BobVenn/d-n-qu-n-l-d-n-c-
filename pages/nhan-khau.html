@@ -164,7 +164,7 @@
 <body>
 
     <div class="wrapper">
-        <!-- SIDEBAR ĐỒNG BỘ ICON MỚI -->
+        <!-- SIDEBAR -->
         <nav id="sidebar">
             <div>
                 <div class="sidebar-header">
@@ -173,18 +173,21 @@
                 </div>
 
                 <ul class="list-unstyled components">
+                    <!-- Mục Tổng quan: Cả Admin và Cư dân đều xem được -->
                     <li>
                         <a href="../index.html"><i class="fa-solid fa-chart-line"></i> Tổng quan</a>
                     </li>
-                    <li>
+                    <!-- Các mục quản lý dành riêng cho Admin/Cán bộ -->
+                    <li class="admin-only">
                         <a href="ho-khau.html"><i class="fa-solid fa-address-book"></i> Quản lý Hộ khẩu</a>
                     </li>
-                    <li class="active">
+                    <li class="active admin-only">
                         <a href="nhan-khau.html"><i class="fa-solid fa-users"></i> Quản lý Nhân khẩu</a>
                     </li>
-                    <li>
+                    <li class="admin-only">
                         <a href="thu-phi.html"><i class="fa-solid fa-receipt"></i> Quản lý Thu - Chi</a>
                     </li>
+                    <!-- Mục Cư dân và Admin đều thấy -->
                     <li>
                         <a href="phan-anh.html"><i class="fa-solid fa-comment-dots"></i> Phản ánh cư dân</a>
                     </li>
@@ -192,22 +195,22 @@
             </div>
 
             <div class="sidebar-footer">
-                <a href="../login.html" class="btn-logout-sidebar">
+                <button id="btnLogout" class="btn-logout-sidebar">
                     <i class="fa-solid fa-right-from-bracket"></i> Đăng xuất
-                </a>
+                </button>
             </div>
         </nav>
 
         <!-- NỘI DUNG CHÍNH -->
         <div id="content">
             <div class="top-user-bar">
-                <span class="text-secondary">Xin chào, <strong class="text-dark">hoang'g khánh'h</strong></span>
-                <span class="user-badge">Cư dân</span>
+                <span class="text-secondary">Xin chào, <strong id="userDisplayName" class="text-dark">Đang tải...</strong></span>
+                <span id="userRoleBadge" class="user-badge">Cư dân</span>
             </div>
 
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h3 class="fw-bold text-dark mb-0">Quản Lý Nhân Khẩu</h3>
-                <button class="btn btn-primary-custom" data-bs-toggle="modal" data-bs-target="#modalNhanKhau" onclick="resetForm()">
+                <button class="btn btn-primary-custom admin-only" data-bs-toggle="modal" data-bs-target="#modalNhanKhau" onclick="resetForm()">
                     <i class="fa-solid fa-user-plus me-1"></i> Thêm Nhân Khẩu Mới
                 </button>
             </div>
@@ -252,7 +255,7 @@
                                 <th>Ngày Sinh</th>
                                 <th>Giới Tính</th>
                                 <th>Quan Hệ Với Chủ Hộ</th>
-                                <th>Hành Động</th>
+                                <th class="admin-only">Hành Động</th>
                             </tr>
                         </thead>
                         <tbody id="nhanKhauTableBody">
@@ -313,7 +316,13 @@
         </div>
     </div>
 
+    <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Script Bảo vệ Auth & Tự động Phân quyền -->
+    <script type="module" src="../js/check-auth.js"></script>
+    
+    <!-- Script Xử lý Logic Nhân Khẩu -->
     <script type="module" src="../js/services/nhanKhauService.js"></script>
 </body>
 </html>
